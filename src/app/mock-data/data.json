@@ -1,0 +1,94 @@
+{
+    "known_items": 
+    [
+        {
+            "id": 1,
+            "name": "Linen Cloth",
+            "sell_price": 25
+        },
+        {
+            "id": 2,
+            "name": "Hops",
+            "sell_price": 15
+        },
+        {
+            "id": 3,
+            "name": "Copper Tube",
+            "sell_price": 100
+        }
+    ],
+    "known_enemies": 
+    [
+        {
+            "id": 1,
+            "name": "Defias Bandit",
+            "level": 10,
+            "health": 100
+        },
+        {
+            "id": 2,
+            "name": "Defias Thug",
+            "level": 12,
+            "health": 120
+        },
+        {
+            "id": 3,
+            "name": "Defias Bandit",
+            "level": 11,
+            "health": 118
+        }
+    ],
+    "kills": 
+    [
+        {
+            "enemy_id": 1,
+            "dropped_items": 
+            [
+                {
+                    "item_id": 1,
+                    "amount": 2
+                },
+                {
+                    "item_id": 2,
+                    "amount": 1
+                },
+                {
+                    "item_id": 3,
+                    "amount": 1
+                }
+            ],
+            "dropped_money": 23
+        },
+        {
+            "enemy_id": 2,
+            "dropped_items": 
+            [
+                {
+                    "item_id": 1,
+                    "amount": 1
+                },
+                {
+                    "item_id": 3,
+                    "amount": 1
+                }
+            ],
+            "dropped_money": 30
+        },
+                {
+            "enemy_id": 2,
+            "dropped_items": [],
+            "dropped_money": 18
+        },
+                {
+            "enemy_id": 2,
+            "dropped_items": 
+            [
+                {
+                    "item_id": 3,
+                    "amount": 3
+                }
+            ],
+            "dropped_money": 55
+        }
+]
+}

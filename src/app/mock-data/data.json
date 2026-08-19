@@ -52,6 +52,7 @@
     "kills": 
     [
         {
+            "kill_number": 1,
             "enemy_id": 1,
             "dropped_items": 
             [
@@ -71,6 +72,7 @@
             "dropped_money": 23
         },
         {
+            "kill_number": 2,
             "enemy_id": 2,
             "dropped_items": 
             [
@@ -85,12 +87,14 @@
             ],
             "dropped_money": 30
         },
-                {
+        {
+            "kill_number": 3,
             "enemy_id": 2,
             "dropped_items": [],
             "dropped_money": 18
         },
                 {
+            "kill_number": 4,
             "enemy_id": 2,
             "dropped_items": 
             [

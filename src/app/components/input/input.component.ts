@@ -8,10 +8,11 @@ import { ItemCardComponent } from '../cards/item-card/item-card.component';
 import { MainService } from '../../services/main.service';
 import { CreateEnemyComponent, NewEnemyData } from '../popups/create-enemy/create-enemy.component';
 import { CreateItemComponent, NewItemData } from '../popups/create-item/create-item.component';
+import { CreateKillComponent, NewKillData } from '../popups/create-kill/create-kill.component';
 
 @Component({
   selector: 'app-input',
-  imports: [EnemyCardComponent, ItemCardComponent, CreateEnemyComponent, CreateItemComponent],
+  imports: [EnemyCardComponent, ItemCardComponent, CreateEnemyComponent, CreateItemComponent, CreateKillComponent],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
 })
@@ -24,6 +25,7 @@ export class InputComponent implements OnInit {
   killedEnemies: KilledEnemy[] = [];
   isCreateEnemyOpen = false;
   isCreateItemOpen = false;
+  isCreateKillOpen = false;
 
   ngOnInit(): void {
     const data = this.mainService.loadMockData();
@@ -77,14 +79,21 @@ export class InputComponent implements OnInit {
     }
   }
 
-  addKill(knownEnemy: Enemy, droppedItems: DroppedItems[], droppedMoney: number): KilledEnemy{
+  addKill(knownEnemy: Enemy, droppedItems: DroppedItems[], droppedMoney: number): KilledEnemy {
     const newKill: KilledEnemy = {
+      kill_number: (this.killedEnemies.length + 1),
       enemy: knownEnemy,
       dropped_items: droppedItems,
       dropped_money: droppedMoney
     }
 
+    this.killedEnemies.push(newKill);
     return newKill;
+  }
+
+  createKill(kill: NewKillData): void {
+    this.addKill(kill.enemy, kill.dropped_items, kill.dropped_money);
+    this.isCreateKillOpen = false;
   }
 
   findPossibleItemsByName(name: string): Item[] {

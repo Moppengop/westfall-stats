@@ -15,6 +15,11 @@
             "id": 3,
             "name": "Copper Tube",
             "sell_price": 100
+        },
+        {
+            "id": 4,
+            "name": "Sword of the Epic Hero of the Ages",
+            "sell_price": 1509550
         }
     ],
     "known_enemies": 
@@ -36,6 +41,12 @@
             "name": "Defias Bandit",
             "level": 11,
             "health": 118
+        },
+        {
+            "id": 4,
+            "name": "Defias Ultimate Elite Warmonger",
+            "level": 25,
+            "health": 235080
         }
     ],
     "kills": 

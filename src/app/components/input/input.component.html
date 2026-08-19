@@ -8,8 +8,17 @@
   <!-- Add Enemy Page -->
   @if (currentPage === 'addEnemy') {
   <div class="page add-enemy">
-    <app-enemy-card [enemy]="sampleEnemy" />
-    <app-item-card [item]="sampleItem" />
+    <div class="card-group">
+      @for (enemy of knownEnemies; track enemy.id) {
+        <app-enemy-card [enemy]="enemy" />
+      }
+    </div>
+
+    <div class="card-group">
+      @for (item of knownItems; track item.id) {
+        <app-item-card [item]="item" />
+      }
+    </div>
   </div>
   }
 

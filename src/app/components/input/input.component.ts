@@ -5,6 +5,7 @@ import { KilledEnemy } from '../../models/killed_enemy';
 import { DroppedItems } from '../../models/dropped_items';
 import { EnemyCardComponent } from '../cards/enemy-card/enemy-card.component';
 import { ItemCardComponent } from '../cards/item-card/item-card.component';
+import { MainService } from '../../services/main.service';
 
 @Component({
   selector: 'app-input',
@@ -14,26 +15,20 @@ import { ItemCardComponent } from '../cards/item-card/item-card.component';
 })
 
 export class InputComponent implements OnInit {
+  constructor(private readonly mainService: MainService) {}
+
   pages = ['addItem', 'addEnemy'];
   currentPage = 'addEnemy';
 
   knownItems: Item[] = [];
   knownEnemies: Enemy[] = [];
   killedEnemies: KilledEnemy[] = [];
-  sampleEnemy: Enemy = {
-    id: 1,
-    name: 'Skeleton Warrior',
-    level: 12,
-    health: 850,
-  };
-  sampleItem: Item = {
-    id: 1,
-    name: 'Bronze Tube',
-    sell_price: 13300,
-  };
 
   ngOnInit(): void {
-    // load items and enemies
+    const data = this.mainService.loadMockData();
+    this.knownItems = data.knownItems;
+    this.knownEnemies = data.knownEnemies;
+    this.killedEnemies = data.killedEnemies;
   }
 
   addKnownItem(name: string, sell_price: number): void {

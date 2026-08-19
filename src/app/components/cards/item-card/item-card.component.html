@@ -1,1 +1,13 @@
-<p>item-card.component works!</p>
+<div class="item-card">
+	<div class="item-card__header">
+		<h2>{{ item.name }}</h2>
+		<span class="item-card__id">#{{ item.id }}</span>
+	</div>
+
+	<dl class="item-card__stats">
+		<div>
+			<dt>Sell price</dt>
+			<dd>{{ formattedSellPrice }}</dd>
+		</div>
+	</dl>
+</div>

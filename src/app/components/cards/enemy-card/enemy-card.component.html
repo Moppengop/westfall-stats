@@ -1,1 +1,17 @@
-<p>enemy-card.component works!</p>
+<div class="enemy-card">
+	<div class="enemy-card__header">
+		<h2>{{ enemy.name }}</h2>
+		<span class="enemy-card__id">#{{ enemy.id }}</span>
+	</div>
+
+	<dl class="enemy-card__stats">
+		<div>
+			<dt>Level</dt>
+			<dd>{{ enemy.level }}</dd>
+		</div>
+		<div>
+			<dt>Health</dt>
+			<dd>{{ enemy.health }}</dd>
+		</div>
+	</dl>
+</div>

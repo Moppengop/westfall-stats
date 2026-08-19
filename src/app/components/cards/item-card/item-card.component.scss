@@ -1,0 +1,54 @@
+.item-card {
+	width: min(100%, 180px);
+	min-height: 80px;
+	padding: 0.75rem;
+	box-sizing: border-box;
+	border: 1px solid #d9dee7;
+	border-radius: 8px;
+	background: #ffffff;
+	color: #202633;
+	box-shadow: 0 3px 10px rgb(32 38 51 / 10%);
+}
+
+.item-card__header {
+	display: flex;
+	align-items: baseline;
+	justify-content: space-between;
+	gap: 0.75rem;
+	border-bottom: 1px solid #edf0f4;
+	padding-bottom: 0.5rem;
+}
+
+h2 {
+	margin: 0;
+	overflow-wrap: anywhere;
+	font-size: 0.95rem;
+}
+
+.item-card__id {
+	color: #687386;
+	font-size: 0.7rem;
+}
+
+.item-card__stats {
+	display: grid;
+	gap: 0.75rem;
+	margin: 0.6rem 0 0;
+}
+
+.item-card__stats div {
+	display: grid;
+	gap: 0.2rem;
+}
+
+dt {
+	color: #687386;
+	font-size: 0.65rem;
+	text-transform: uppercase;
+}
+
+dd {
+	margin: 0;
+	font-size: 0.9rem;
+	font-weight: 600;
+}

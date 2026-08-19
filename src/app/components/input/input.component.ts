@@ -3,10 +3,12 @@ import { Item } from '../../models/item';
 import { Enemy } from '../../models/enemy';
 import { KilledEnemy } from '../../models/killed_enemy';
 import { DroppedItems } from '../../models/dropped_items';
+import { EnemyCardComponent } from '../cards/enemy-card/enemy-card.component';
+import { ItemCardComponent } from '../cards/item-card/item-card.component';
 
 @Component({
   selector: 'app-input',
-  imports: [],
+  imports: [EnemyCardComponent, ItemCardComponent],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
 })
@@ -18,6 +20,17 @@ export class InputComponent implements OnInit {
   knownItems: Item[] = [];
   knownEnemies: Enemy[] = [];
   killedEnemies: KilledEnemy[] = [];
+  sampleEnemy: Enemy = {
+    id: 1,
+    name: 'Skeleton Warrior',
+    level: 12,
+    health: 850,
+  };
+  sampleItem: Item = {
+    id: 1,
+    name: 'Bronze Tube',
+    sell_price: 13300,
+  };
 
   ngOnInit(): void {
     // load items and enemies

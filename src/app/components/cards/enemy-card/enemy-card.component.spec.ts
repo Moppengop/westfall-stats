@@ -14,6 +14,12 @@ describe('EnemyCardComponent', () => {
 
     fixture = TestBed.createComponent(EnemyCardComponent);
     component = fixture.componentInstance;
+    component.enemy = {
+      id: 1,
+      name: 'Skeleton',
+      level: 3,
+      health: 100,
+    };
     fixture.detectChanges();
   });
 

@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EnemyTileComponent } from './enemy-tile.component';
+import { EnemyCardComponent } from './enemy-card.component';
 
-describe('EnemyTileComponent', () => {
-  let component: EnemyTileComponent;
-  let fixture: ComponentFixture<EnemyTileComponent>;
+describe('EnemyCardComponent', () => {
+  let component: EnemyCardComponent;
+  let fixture: ComponentFixture<EnemyCardComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [EnemyTileComponent]
+      imports: [EnemyCardComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(EnemyTileComponent);
+    fixture = TestBed.createComponent(EnemyCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

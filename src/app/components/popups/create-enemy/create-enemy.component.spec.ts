@@ -20,4 +20,19 @@ describe('CreateEnemyComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  it('emits the entered enemy when submitted', () => {
+    component.name = 'Defias Scout';
+    component.level = 8;
+    component.health = 75;
+    spyOn(component.submitted, 'emit');
+
+    component.submit();
+
+    expect(component.submitted.emit).toHaveBeenCalledWith({
+      name: 'Defias Scout',
+      level: 8,
+      health: 75,
+    });
+  });
 });

@@ -1,8 +1,14 @@
 <div class="input-root">
-  <div class="tabs">
-    <button type="button" [class.active]="currentPage === 'addEnemy'" (click)="currentPage = 'addEnemy'">Add Enemy</button>
-    <button type="button" [class.active]="currentPage === 'addItem'" (click)="currentPage = 'addItem'">Add Item</button>
-  </div>
+
+  <button type="button" (click)="isCreateEnemyOpen = true">Create enemy</button>
+  <button type="button" (click)="isCreateItemOpen = true">Create item</button>
+
+  @if (isCreateEnemyOpen) {
+    <app-create-enemy (submitted)="createEnemy($event)" (cancelled)="isCreateEnemyOpen = false" />
+  }
+  @if (isCreateItemOpen) {
+    <app-create-item (submitted)="createItem($event)" (cancelled)="isCreateItemOpen = false" />
+  }
 
   <div class="page add-enemy">
     <div class="card-group">

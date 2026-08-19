@@ -6,10 +6,12 @@ import { DroppedItems } from '../../models/dropped_items';
 import { EnemyCardComponent } from '../cards/enemy-card/enemy-card.component';
 import { ItemCardComponent } from '../cards/item-card/item-card.component';
 import { MainService } from '../../services/main.service';
+import { CreateEnemyComponent, NewEnemyData } from '../popups/create-enemy/create-enemy.component';
+import { CreateItemComponent, NewItemData } from '../popups/create-item/create-item.component';
 
 @Component({
   selector: 'app-input',
-  imports: [EnemyCardComponent, ItemCardComponent],
+  imports: [EnemyCardComponent, ItemCardComponent, CreateEnemyComponent, CreateItemComponent],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
 })
@@ -20,6 +22,8 @@ export class InputComponent implements OnInit {
   knownItems: Item[] = [];
   knownEnemies: Enemy[] = [];
   killedEnemies: KilledEnemy[] = [];
+  isCreateEnemyOpen = false;
+  isCreateItemOpen = false;
 
   ngOnInit(): void {
     const data = this.mainService.loadMockData();
@@ -28,10 +32,10 @@ export class InputComponent implements OnInit {
     this.killedEnemies = data.killedEnemies;
   }
 
-  addKnownItem(name: string, sell_price: number): void {
+  addKnownItem(name: string, sell_price: number): boolean {
     if (this.knownItems.some(item => item.name === name)) {
       console.warn(`Item with name "${name}" already exists.`);
-      return;
+      return false;
     }
 
     const newItem: Item = {
@@ -41,12 +45,19 @@ export class InputComponent implements OnInit {
     };
     
     this.knownItems.push(newItem);
+    return true;
   }
 
-  addKnownEnemy(name: string, health: number, level: number): void {
+  createItem(item: NewItemData): void {
+    if (this.addKnownItem(item.name, item.sell_price)) {
+      this.isCreateItemOpen = false;
+    }
+  }
+
+  addKnownEnemy(name: string, health: number, level: number): boolean {
     if (this.knownEnemies.some(enemy => enemy.name === name) && this.knownEnemies.some(enemy => enemy.level === level)) {
       console.warn(`Enemy with name "${name}" and level "${level}" already exists.`);
-      return;
+      return false;
     };
 
     const newEnemy: Enemy = {
@@ -57,7 +68,14 @@ export class InputComponent implements OnInit {
   }
 
     this.knownEnemies.push(newEnemy);
+    return true;
 }
+
+  createEnemy(enemy: NewEnemyData): void {
+    if (this.addKnownEnemy(enemy.name, enemy.health, enemy.level)) {
+      this.isCreateEnemyOpen = false;
+    }
+  }
 
   addKill(knownEnemy: Enemy, droppedItems: DroppedItems[], droppedMoney: number): KilledEnemy{
     const newKill: KilledEnemy = {
@@ -75,7 +93,7 @@ export class InputComponent implements OnInit {
     return this.knownItems.filter(item => item.name.includes(name)).slice(0, 3);
   }
 
-    repeat(amount: number): undefined[] {
+  repeat(amount: number): undefined[] {
     return Array.from({ length: amount });
   }
 }

@@ -1,12 +1,9 @@
 <div class="input-root">
-  <!-- Tabs -->
   <div class="tabs">
     <button type="button" [class.active]="currentPage === 'addEnemy'" (click)="currentPage = 'addEnemy'">Add Enemy</button>
     <button type="button" [class.active]="currentPage === 'addItem'" (click)="currentPage = 'addItem'">Add Item</button>
   </div>
 
-  <!-- Add Enemy Page -->
-  @if (currentPage === 'addEnemy') {
   <div class="page add-enemy">
     <div class="card-group">
       @for (enemy of knownEnemies; track enemy.id) {
@@ -19,25 +16,17 @@
         <app-item-card [item]="item" />
       }
     </div>
-  </div>
-  }
 
-  <!-- Add Item Page -->
-  @if (currentPage === 'addItem') {
-  <div class="page add-item">
-    <label>
-      Name
-      <input type="text" placeholder="Item name" />
-    </label>
-
-    <label>
-      Sell price
-      <input type="number"/>
-    </label>
-
-    <div class="actions">
-      <button type="button">Confirm Item</button>
+    <div class="card-group">
+      @for (kill of killedEnemies; track kill) {
+        <h2>{{ kill.enemy.name }}</h2>
+        @for (item of kill.dropped_items; track item) {
+          @for (_ of repeat(item.amount); track $index) {
+            <app-item-card [item]="item.item" />
+          }
+        }
+        <label>dropped money: {{ kill.dropped_money }}</label>
+      }
     </div>
   </div>
-  }
 </div>

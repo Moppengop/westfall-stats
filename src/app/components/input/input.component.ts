@@ -17,9 +17,6 @@ import { MainService } from '../../services/main.service';
 export class InputComponent implements OnInit {
   constructor(private readonly mainService: MainService) {}
 
-  pages = ['addItem', 'addEnemy'];
-  currentPage = 'addEnemy';
-
   knownItems: Item[] = [];
   knownEnemies: Enemy[] = [];
   killedEnemies: KilledEnemy[] = [];
@@ -76,5 +73,9 @@ export class InputComponent implements OnInit {
     // try to find items by name
     // show 3 best matches
     return this.knownItems.filter(item => item.name.includes(name)).slice(0, 3);
+  }
+
+    repeat(amount: number): undefined[] {
+    return Array.from({ length: amount });
   }
 }

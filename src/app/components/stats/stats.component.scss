@@ -1,0 +1,187 @@
+:host {
+	display: block;
+	min-width: 0;
+}
+
+.stats-panel {
+	min-height: 100vh;
+	padding: 32px clamp(20px, 4vw, 56px);
+	color: #26332b;
+}
+
+.stats-layout {
+	display: grid;
+	grid-template-columns: minmax(0, 1.2fr) minmax(240px, 1fr);
+	align-items: start;
+	gap: 28px;
+}
+
+.kill-log,
+.full-stats-menu {
+	min-width: 0;
+}
+
+.full-stats-menu {
+	padding-left: 22px;
+	border-left: 1px solid #d8ded7;
+}
+
+.stats-header {
+	display: flex;
+	align-items: end;
+	justify-content: space-between;
+	gap: 20px;
+	padding-bottom: 20px;
+	border-bottom: 1px solid #d8ded7;
+}
+
+.eyebrow {
+	margin: 0 0 6px;
+	color: #718076;
+	font-size: 11px;
+	font-weight: 700;
+	letter-spacing: 1px;
+}
+
+.stats-header h1 {
+	margin: 0;
+	font-size: 28px;
+}
+
+.stats-header h2 {
+	margin: 0;
+	font-size: 22px;
+}
+
+
+.empty-state {
+	padding: 32px 0;
+	color: #718076;
+}
+
+.kill-list {
+	display: grid;
+	gap: 12px;
+	margin: 20px 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.kill-entry {
+	padding: 18px 20px;
+	border: 1px solid #d8ded7;
+	border-radius: 4px;
+	background: #fff;
+}
+
+.kill-entry__header {
+	display: flex;
+	align-items: baseline;
+	gap: 12px;
+	flex-wrap: wrap;
+}
+
+.kill-number,
+.enemy-level {
+	color: #718076;
+	font-size: 13px;
+}
+
+.kill-entry__header h2 {
+	margin: 0;
+	font-size: 18px;
+}
+
+.kill-entry__content {
+	display: flex;
+	justify-content: space-between;
+	gap: 24px;
+	margin-top: 16px;
+}
+
+.drops h3 {
+	margin: 0 0 8px;
+	color: #59675d;
+	font-size: 12px;
+	text-transform: uppercase;
+}
+
+.drops ul {
+	display: grid;
+	gap: 6px;
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.drops li {
+	display: flex;
+	gap: 18px;
+	justify-content: space-between;
+	color: #35443a;
+}
+
+.drops li strong {
+	color: #617067;
+	font-weight: 600;
+}
+
+.drops li.drop-total {
+	margin-top: 4px;
+	padding-top: 8px;
+	border-top: 1px solid #d8ded7;
+	color: #26332b;
+	font-weight: 700;
+}
+
+.drops li.drop-total strong {
+	color: #286b4f;
+	font-weight: 700;
+}
+
+.no-drops {
+	margin: 0;
+	color: #718076;
+}
+
+@media (max-width: 520px) {
+	.stats-layout {
+		grid-template-columns: minmax(0, 1fr);
+		gap: 28px;
+	}
+
+	.full-stats-menu {
+		padding: 0;
+		border-left: 0;
+	}
+
+	.stats-panel {
+		padding: 24px 16px;
+	}
+
+	.kill-entry {
+		padding: 14px;
+	}
+
+	.kill-entry__content {
+		gap: 12px;
+	}
+}
+
+.stat-total {
+	display: grid;
+	gap: 8px;
+	margin-top: 20px;
+	padding: 16px;
+	border: 1px solid #d8ded7;
+	border-radius: 4px;
+	background: #fff;
+	color: #66746a;
+	font-size: 14px;
+}
+
+.stat-total strong {
+	color: #286b4f;
+	font-size: 32px;
+	line-height: 1;
+}

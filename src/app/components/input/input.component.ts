@@ -9,10 +9,11 @@ import { MainService } from '../../services/main.service';
 import { CreateEnemyComponent, NewEnemyData } from '../popups/create-enemy/create-enemy.component';
 import { CreateItemComponent, NewItemData } from '../popups/create-item/create-item.component';
 import { CreateKillComponent, NewKillData } from '../popups/create-kill/create-kill.component';
+import { StatsComponent } from '../stats/stats.component';
 
 @Component({
   selector: 'app-input',
-  imports: [EnemyCardComponent, ItemCardComponent, CreateEnemyComponent, CreateItemComponent, CreateKillComponent],
+  imports: [EnemyCardComponent, ItemCardComponent, CreateEnemyComponent, CreateItemComponent, CreateKillComponent, StatsComponent],
   templateUrl: './input.component.html',
   styleUrl: './input.component.scss',
 })
@@ -32,6 +33,7 @@ export class InputComponent implements OnInit {
     this.knownItems = data.knownItems;
     this.knownEnemies = data.knownEnemies;
     this.killedEnemies = data.killedEnemies;
+    this.mainService.setKilledEnemies(this.killedEnemies);
   }
 
   addKnownItem(name: string, sell_price: number): boolean {
@@ -88,6 +90,7 @@ export class InputComponent implements OnInit {
     }
 
     this.killedEnemies.push(newKill);
+    this.mainService.setKilledEnemies([...this.killedEnemies]);
     return newKill;
   }
 

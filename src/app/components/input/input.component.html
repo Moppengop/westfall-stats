@@ -1,47 +1,50 @@
-<div class="input-root">
+<main class="workspace">
+  <aside class="input-root" aria-labelledby="input-title">
+    <header class="input-header">
+      <p class="eyebrow">WESTFALL STATS</p>
+      <h1 id="input-title">Input</h1>
+    </header>
 
-  <button type="button" (click)="isCreateEnemyOpen = true">Create enemy</button>
-  <button type="button" (click)="isCreateItemOpen = true">Create item</button>
-  <button type="button" (click)="isCreateKillOpen = true">Add kill</button>
-
-  @if (isCreateEnemyOpen) {
-    <app-create-enemy (submitted)="createEnemy($event)" (cancelled)="isCreateEnemyOpen = false" />
-  }
-  @if (isCreateItemOpen) {
-    <app-create-item (submitted)="createItem($event)" (cancelled)="isCreateItemOpen = false" />
-  }
-  @if (isCreateKillOpen) {
-    <app-create-kill
-      [enemies]="knownEnemies"
-      [items]="knownItems"
-      (submitted)="createKill($event)"
-      (cancelled)="isCreateKillOpen = false"
-    />
-  }
-
-  <div class="page add-enemy">
-    <div class="card-group">
-      @for (enemy of knownEnemies; track enemy.id) {
-        <app-enemy-card [enemy]="enemy" />
-      }
+    <div class="create-actions">
+      <button type="button" (click)="isCreateEnemyOpen = true">Create enemy</button>
+      <button type="button" (click)="isCreateItemOpen = true">Create item</button>
+    </div>
+    <div class="kill-action">
+      <button type="button" class="add-kill-button" (click)="isCreateKillOpen = true">Add kill</button>
     </div>
 
-    <div class="card-group">
-      @for (item of knownItems; track item.id) {
-        <app-item-card [item]="item" />
-      }
-    </div>
+    @if (isCreateEnemyOpen) {
+      <app-create-enemy (submitted)="createEnemy($event)" (cancelled)="isCreateEnemyOpen = false" />
+    }
+    @if (isCreateItemOpen) {
+      <app-create-item (submitted)="createItem($event)" (cancelled)="isCreateItemOpen = false" />
+    }
+    @if (isCreateKillOpen) {
+      <app-create-kill
+        [enemies]="knownEnemies"
+        [items]="knownItems"
+        (submitted)="createKill($event)"
+        (cancelled)="isCreateKillOpen = false"
+      />
+    }
 
-    <div class="card-group">
-      @for (kill of killedEnemies; track kill) {
-        <h2>{{ kill.enemy.name }}</h2>
-        @for (item of kill.dropped_items; track item) {
-          @for (_ of repeat(item.amount); track $index) {
-            <app-item-card [item]="item.item" />
-          }
+    <div class="catalog-list">
+      <section class="card-group" aria-labelledby="enemies-title">
+        <h2 id="enemies-title">Known enemies</h2>
+        @for (enemy of knownEnemies; track enemy.id) {
+          <app-enemy-card [enemy]="enemy" />
         }
-        <label>dropped money: {{ kill.dropped_money }}</label>
-      }
+      </section>
+
+      <section class="card-group" aria-labelledby="items-title">
+        <h2 id="items-title">Known items</h2>
+        @for (item of knownItems; track item.id) {
+          <app-item-card [item]="item" />
+        }
+      </section>
     </div>
-  </div>
-</div>
+
+  </aside>
+
+  <app-stats />
+</main>

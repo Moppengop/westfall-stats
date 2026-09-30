@@ -1,1 +1,62 @@
-<p>stats.component works!</p>
+<section class="stats-panel" aria-label="Combat records and statistics">
+	<div class="stats-layout">
+		<section class="kill-log" aria-labelledby="stats-title">
+			<header class="stats-header">
+				<div>
+					<p class="eyebrow">FIELD RECORD</p>
+					<h1 id="stats-title">Kill log</h1>
+				</div>
+			</header>
+
+			@if (mainService.killedEnemies().length === 0) {
+				<p class="empty-state">Kills you record will appear here.</p>
+			} @else {
+				<ol class="kill-list">
+					@for (kill of mainService.killedEnemies(); track kill.kill_number) {
+						<li class="kill-entry">
+							<header class="kill-entry__header">
+								<span class="kill-number">#{{ kill.kill_number }}</span>
+								<h2>{{ kill.enemy.name }}</h2>
+								<span class="enemy-level">Level {{ kill.enemy.level }}</span>
+							</header>
+
+							<div class="kill-entry__content">
+								<div class="drops">
+									<h3>Drops</h3>
+                                    <ul>
+                                        @for (drop of kill.dropped_items; track $index) {
+                                            <li><span>{{ drop.item.name }}</span><strong>×{{ drop.amount }}</strong></li>
+                                        }
+                                        @if (kill.dropped_money > 0) {
+                                            <li><span>Copper</span><strong>{{ kill.dropped_money }}</strong></li>
+                                        }
+										<li class="drop-total"><span>Total</span><strong>{{ enemyWorth(kill, 'total') }}</strong></li>
+                                    </ul>
+								</div>
+							</div>
+						</li>
+					}
+				</ol>
+			}
+		</section>
+
+		<aside class="full-stats-menu" aria-labelledby="full-stats-title">
+			<header class="stats-header">
+				<div>
+					<p class="eyebrow">OVERVIEW</p>
+					<h2 id="full-stats-title">Full stats</h2>
+				</div>
+			</header>
+			<div class="stat-total">
+				<span>Total kills</span>
+				<strong>{{ mainService.killedEnemies().length }}</strong>
+			</div>
+			<div class="stat-total">
+				<span>Money gained</span>
+				By items<strong>{{ allEnemiesWorth(mainService.killedEnemies(), 'items') }}</strong>
+                By money <strong>{{ allEnemiesWorth(mainService.killedEnemies(), 'money') }}</strong>
+                Total <strong>{{ allEnemiesWorth(mainService.killedEnemies(), 'total') }}</strong>
+			</div>
+		</aside>
+	</div>
+</section>

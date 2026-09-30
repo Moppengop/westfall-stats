@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import mockData from '../mock-data/data.json';
 import { DroppedItems } from '../models/dropped_items';
 import { Enemy } from '../models/enemy';
@@ -11,6 +11,7 @@ interface MockDroppedItem {
 }
 
 interface MockKill {
+	kill_number: number;
 	enemy_id: number;
 	dropped_items: MockDroppedItem[];
 	dropped_money: number;
@@ -24,6 +25,12 @@ interface MockData {
 
 @Injectable({ providedIn: 'root' })
 export class MainService {
+	readonly killedEnemies = signal<KilledEnemy[]>([]);
+
+	setKilledEnemies(killedEnemies: KilledEnemy[]): void {
+		this.killedEnemies.set(killedEnemies);
+	}
+
 	loadMockData(): {
 		knownItems: Item[];
 		knownEnemies: Enemy[];
@@ -51,6 +58,7 @@ export class MainService {
 						.filter((droppedItem): droppedItem is DroppedItems => droppedItem !== undefined);
 
 					return {
+						kill_number: kill.kill_number,
 						enemy,
 						dropped_items: droppedItems,
 						dropped_money: kill.dropped_money,

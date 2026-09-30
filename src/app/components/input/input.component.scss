@@ -100,6 +100,43 @@
   background: #1f593f;
 }
 
+.backup-menu {
+  margin-bottom: 12px;
+  color: #516056;
+  font-size: 13px;
+}
+
+.backup-menu summary {
+  width: fit-content;
+  cursor: pointer;
+}
+
+.backup-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 10px;
+}
+
+.backup-actions button {
+  padding: 6px 8px;
+  border: 1px solid #d7ded8;
+  border-radius: 4px;
+  background: #fff;
+  color: #34453a;
+  font: inherit;
+  cursor: pointer;
+}
+
+.backup-actions button:hover {
+  background: #edf1ed;
+}
+
+.backup-message {
+  margin: -4px 0 12px;
+  color: #516056;
+  font-size: 12px;
+}
+
 @media (max-width: 900px) {
   .workspace {
     grid-template-columns: minmax(0, 1fr);

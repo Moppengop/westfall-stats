@@ -12,6 +12,17 @@
     <div class="kill-action">
       <button type="button" class="add-kill-button" (click)="isCreateKillOpen = true">Add kill</button>
     </div>
+    <details class="backup-menu">
+      <summary>Back up data</summary>
+      <div class="backup-actions">
+        <button type="button" (click)="exportBackup()">Export JSON</button>
+        <button type="button" (click)="backupFile.click()">Import JSON</button>
+        <input #backupFile type="file" accept=".json,application/json" (change)="importBackup($event)" hidden />
+      </div>
+    </details>
+    @if (backupMessage) {
+      <p class="backup-message" aria-live="polite">{{ backupMessage }}</p>
+    }
 
     @if (isCreateEnemyOpen) {
       <app-create-enemy (submitted)="createEnemy($event)" (cancelled)="isCreateEnemyOpen = false" />

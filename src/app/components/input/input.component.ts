@@ -30,7 +30,17 @@ export class InputComponent implements OnInit {
   isCreateEnemyOpen = false;
   isCreateItemOpen = false;
   isCreateKillOpen = false;
+  isCreateChestOpen = false;
   backupMessage = '';
+
+  get chestEnemy(): Enemy {
+    return this.knownEnemies.find((enemy) => enemy.name === 'Chest' && enemy.level === 1) ?? {
+      id: Math.max(0, ...this.knownEnemies.map((enemy) => enemy.id)) + 1,
+      name: 'Chest',
+      level: 1,
+      health: 1,
+    };
+  }
 
   ngOnInit(): void {
     const data = this.mainService.loadData();
@@ -100,8 +110,12 @@ export class InputComponent implements OnInit {
   }
 
   createKill(kill: NewKillData): void {
+    if (!this.knownEnemies.some((enemy) => enemy.id === kill.enemy.id)) {
+      this.knownEnemies.push(kill.enemy);
+    }
     this.addKill(kill.enemy, kill.dropped_items, kill.dropped_money);
     this.isCreateKillOpen = false;
+    this.isCreateChestOpen = false;
   }
 
   findPossibleItemsByName(name: string): Item[] {

@@ -24,12 +24,29 @@ interface ItemDropRow {
 export class CreateKillComponent {
   @Input() enemies: Enemy[] = [];
   @Input() items: Item[] = [];
+  @Input()
+  set fixedEnemy(enemy: Enemy | null) {
+    this._fixedEnemy = enemy;
+    if (enemy) {
+      this.selectedEnemy = enemy;
+    }
+  }
+
+  get fixedEnemy(): Enemy | null {
+    return this._fixedEnemy;
+  }
+
   @Output() submitted = new EventEmitter<NewKillData>();
   @Output() cancelled = new EventEmitter<void>();
 
+  private _fixedEnemy: Enemy | null = null;
   selectedEnemy: Enemy | null = null;
   droppedMoney = 0;
   itemRows: ItemDropRow[] = [];
+
+  get sortedItems(): Item[] {
+    return [...this.items].sort((first, second) => first.name.localeCompare(second.name));
+  }
 
   get isSubmitDisabled(): boolean {
     return !this.selectedEnemy

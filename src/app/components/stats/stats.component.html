@@ -12,8 +12,8 @@
 				<p class="empty-state">Kills you record will appear here.</p>
 			} @else {
 				<ol class="kill-list">
-					@for (kill of mainService.killedEnemies(); track kill.kill_number) {
-						<li class="kill-entry">
+					@for (kill of orderedKills; track kill.kill_number; let first = $first) {
+						<li class="kill-entry" [class.kill-entry--latest]="first">
 							<header class="kill-entry__header">
 								<span class="kill-number">#{{ kill.kill_number }}</span>
 								<h2>{{ kill.enemy.name }}</h2>

@@ -11,6 +11,10 @@ import { KilledEnemy } from '../../models/killed_enemy';
 export class StatsComponent {
   constructor(readonly mainService: MainService) {}
 
+  get orderedKills(): KilledEnemy[] {
+    return [...this.mainService.killedEnemies()].sort((first, second) => second.kill_number - first.kill_number);
+  }
+
   enemyWorth(enemy: KilledEnemy, type: 'items' | 'money' | 'total'): number {
     var itemsWorth = 0;
     var moneyWorth = 0;

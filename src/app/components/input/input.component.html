@@ -11,6 +11,7 @@
     </div>
     <div class="kill-action">
       <button type="button" class="add-kill-button" (click)="isCreateKillOpen = true">Add kill</button>
+      <button type="button" class="add-kill-button" (click)="isCreateChestOpen = true">Add chest</button>
     </div>
     <details class="backup-menu">
       <summary>Back up data</summary>
@@ -30,12 +31,13 @@
     @if (isCreateItemOpen) {
       <app-create-item (submitted)="createItem($event)" (cancelled)="isCreateItemOpen = false" />
     }
-    @if (isCreateKillOpen) {
+    @if (isCreateKillOpen || isCreateChestOpen) {
       <app-create-kill
         [enemies]="knownEnemies"
         [items]="knownItems"
+        [fixedEnemy]="isCreateChestOpen ? chestEnemy : null"
         (submitted)="createKill($event)"
-        (cancelled)="isCreateKillOpen = false"
+        (cancelled)="isCreateKillOpen = false; isCreateChestOpen = false"
       />
     }
 

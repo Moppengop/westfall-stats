@@ -4,9 +4,13 @@
 }
 
 .stats-panel {
-	min-height: 100vh;
+	box-sizing: border-box;
+	height: 100vh;
+	height: 100dvh;
+	min-height: 0;
 	padding: 32px clamp(20px, 4vw, 56px);
 	color: #26332b;
+	overflow-y: auto;
 }
 
 .stats-layout {
@@ -72,6 +76,12 @@
 	border: 1px solid #d8ded7;
 	border-radius: 4px;
 	background: #fff;
+}
+
+.kill-entry--latest {
+	border-color: #286b4f;
+	box-shadow: inset 4px 0 #286b4f;
+	background: #f1f7f2;
 }
 
 .kill-entry__header {
@@ -148,6 +158,14 @@
 	.stats-layout {
 		grid-template-columns: minmax(0, 1fr);
 		gap: 28px;
+	}
+
+	@media (max-width: 900px) {
+		.stats-panel {
+			height: auto;
+			min-height: 0;
+			overflow: visible;
+		}
 	}
 
 	.full-stats-menu {

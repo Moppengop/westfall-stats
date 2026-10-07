@@ -1,14 +1,14 @@
 <section class="stats-panel" aria-label="Combat records and statistics">
 	<div class="stats-layout">
-		<section class="kill-log" aria-labelledby="stats-title">
+		<section class="kill-log" aria-labelledby="kill-log-title">
 			<header class="stats-header">
 				<div>
 					<p class="eyebrow">FIELD RECORD</p>
-					<h1 id="stats-title">Kill log</h1>
+					<h1 id="kill-log-title">Kill log</h1>
 				</div>
 			</header>
 
-			@if (mainService.killedEnemies().length === 0) {
+			@if (orderedKills.length === 0) {
 				<p class="empty-state">Kills you record will appear here.</p>
 			} @else {
 				<ol class="kill-list">
@@ -23,15 +23,17 @@
 							<div class="kill-entry__content">
 								<div class="drops">
 									<h3>Drops</h3>
-                                    <ul>
-                                        @for (drop of kill.dropped_items; track $index) {
-                                            <li><span>{{ drop.item.name }}</span><strong>×{{ drop.amount }}</strong></li>
-                                        }
-                                        @if (kill.dropped_money > 0) {
-                                            <li><span>Copper</span><strong>{{ kill.dropped_money }}</strong></li>
-                                        }
-										<li class="drop-total"><span>Total</span><strong>{{ enemyWorth(kill, 'total') }}</strong></li>
-                                    </ul>
+									<ul>
+										@for (drop of kill.dropped_items; track $index) {
+											<li><span>{{ drop.item.name }}</span><strong>×{{ drop.amount }}</strong></li>
+										}
+										@if (kill.dropped_money > 0) {
+											<li><span>Money</span><strong>{{ formatMoney(kill.dropped_money) }}</strong></li>
+										}
+										<li class="drop-total">
+											<span>Total worth</span><strong>{{ formatMoney(killWorth(kill)) }}</strong>
+										</li>
+									</ul>
 								</div>
 							</div>
 						</li>
@@ -46,17 +48,254 @@
 					<p class="eyebrow">OVERVIEW</p>
 					<h2 id="full-stats-title">Full stats</h2>
 				</div>
+				<button type="button" class="reset-filters" (click)="resetFilters()">All enemies</button>
 			</header>
-			<div class="stat-total">
-				<span>Total kills</span>
-				<strong>{{ mainService.killedEnemies().length }}</strong>
-			</div>
-			<div class="stat-total">
-				<span>Money gained</span>
-				By items<strong>{{ allEnemiesWorth(mainService.killedEnemies(), 'items') }}</strong>
-                By money <strong>{{ allEnemiesWorth(mainService.killedEnemies(), 'money') }}</strong>
-                Total <strong>{{ allEnemiesWorth(mainService.killedEnemies(), 'total') }}</strong>
-			</div>
+
+			<section class="filter-panel" aria-labelledby="filter-title">
+				<h3 id="filter-title">Filters</h3>
+				<label class="check-option">
+					<input
+						type="checkbox"
+						name="excludeChests"
+						[ngModel]="!includeChests"
+						(ngModelChange)="includeChests = !$event"
+					/>
+					No chests
+				</label>
+
+				<fieldset class="name-filter">
+					<legend>Enemy names</legend>
+					<div class="name-options">
+						<label class="check-option">
+							<input
+								type="checkbox"
+								name="allEnemyNames"
+								[ngModel]="selectedEnemyNames === null"
+								(ngModelChange)="setAllEnemyNames($event)"
+							/>
+							All names
+						</label>
+						@for (name of enemyNames; track name) {
+							<label class="check-option">
+								<input
+									type="checkbox"
+									[name]="'enemy-' + $index"
+									[ngModel]="isEnemyNameSelected(name)"
+									(ngModelChange)="setEnemyNameSelected(name, $event)"
+								/>
+								{{ name }}
+							</label>
+						}
+					</div>
+				</fieldset>
+
+				<fieldset class="level-filter">
+					<legend>Enemy level</legend>
+					<label>
+						From
+						<input type="number" name="minimumLevel" min="0" [(ngModel)]="minimumLevel" />
+					</label>
+					<span aria-hidden="true">to</span>
+					<label>
+						To
+						<input type="number" name="maximumLevel" min="0" [(ngModel)]="maximumLevel" />
+					</label>
+				</fieldset>
+				@if (minimumLevel !== null && maximumLevel !== null && minimumLevel > maximumLevel) {
+					<p class="filter-error" role="alert">The minimum level must not exceed the maximum level.</p>
+				}
+			</section>
+
+			<p class="result-count">Showing {{ filteredKills.length }} of {{ allKills.length }} kills</p>
+
+			<section class="summary-section" aria-labelledby="summary-title">
+				<h3 id="summary-title">Filtered summary</h3>
+				<div class="summary-grid">
+					<article class="stat-card">
+						<span>Total kills</span>
+						<strong>{{ filteredKills.length }}</strong>
+					</article>
+					<article class="stat-card">
+						<span>Total items looted</span>
+						<strong>{{ filteredItemCount }}</strong>
+						<small>Average {{ filteredAverageItems.toFixed(1) }} per kill</small>
+					</article>
+					<article class="stat-card">
+						<span>Total damage done</span>
+						<strong>{{ filteredDamage }}</strong>
+						<small>Average {{ filteredAverageDamage.toFixed(1) }} per kill</small>
+					</article>
+					<article class="stat-card">
+						<span>Average enemy level</span>
+						<strong>{{ filteredAverageLevel.toFixed(1) }}</strong>
+					</article>
+				</div>
+
+				<div class="money-summary">
+					<h4>Money gained</h4>
+					<div class="money-grid">
+						<div><span>By items</span><strong>{{ formatMoney(filteredItemsWorth) }}</strong></div>
+						<div><span>By money looted</span><strong>{{ formatMoney(filteredMoney) }}</strong></div>
+						<div><span>Total</span><strong>{{ formatMoney(filteredTotalWorth) }}</strong></div>
+					</div>
+					<h4>Average per kill</h4>
+					<div class="money-grid">
+						<div><span>By items</span><strong>{{ formatMoney(filteredAverageItemsWorth, 1) }}</strong></div>
+						<div><span>By money looted</span><strong>{{ formatMoney(filteredAverageMoney, 1) }}</strong></div>
+						<div><span>Total</span><strong>{{ formatMoney(filteredAverageTotalWorth, 1) }}</strong></div>
+					</div>
+				</div>
+			</section>
+
+			<section class="worth-section" aria-labelledby="worth-title">
+				<h3 id="worth-title">Worth highlights</h3>
+				<div class="worth-grid">
+					<article class="worth-highlight">
+						<h4>Most worth</h4>
+						@if (mostWorthKill; as kill) {
+							<div class="kill-entry kill-entry--most-worth">
+								<header class="kill-entry__header">
+									<span class="kill-number">#{{ kill.kill_number }}</span>
+									<h5>{{ kill.enemy.name }}</h5>
+									<span class="enemy-level">Level {{ kill.enemy.level }}</span>
+								</header>
+								<div class="kill-entry__content">
+									<div class="drops">
+										<h3>Drops</h3>
+										<ul>
+											@for (drop of kill.dropped_items; track $index) {
+												<li><span>{{ drop.item.name }}</span><strong>×{{ drop.amount }}</strong></li>
+											}
+											@if (kill.dropped_money > 0) {
+												<li><span>Money</span><strong>{{ formatMoney(kill.dropped_money) }}</strong></li>
+											}
+											<li class="drop-total">
+												<span>Total worth</span><strong>{{ formatMoney(killWorth(kill)) }}</strong>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						} @else {
+							<p class="empty-state">No kills match these filters.</p>
+						}
+					</article>
+					<article class="worth-highlight">
+						<h4>Least worth</h4>
+						@if (leastWorthKill; as kill) {
+							<div class="kill-entry kill-entry--least-worth">
+								<header class="kill-entry__header">
+									<span class="kill-number">#{{ kill.kill_number }}</span>
+									<h5>{{ kill.enemy.name }}</h5>
+									<span class="enemy-level">Level {{ kill.enemy.level }}</span>
+								</header>
+								<div class="kill-entry__content">
+									<div class="drops">
+										<h3>Drops</h3>
+										<ul>
+											@for (drop of kill.dropped_items; track $index) {
+												<li><span>{{ drop.item.name }}</span><strong>×{{ drop.amount }}</strong></li>
+											}
+											@if (kill.dropped_money > 0) {
+												<li><span>Money</span><strong>{{ formatMoney(kill.dropped_money) }}</strong></li>
+											}
+											<li class="drop-total">
+												<span>Total worth</span><strong>{{ formatMoney(killWorth(kill)) }}</strong>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						} @else {
+							<p class="empty-state">No kills match these filters.</p>
+						}
+					</article>
+				</div>
+			</section>
+
+			<section class="table-section" aria-labelledby="enemy-breakdown-title">
+				<h3 id="enemy-breakdown-title">Enemy breakdown <small>All kills, including chests</small></h3>
+				<div class="table-scroll">
+					<table>
+						<thead>
+							<tr>
+								<th scope="col" [attr.aria-sort]="enemySortAria('enemy')"><button type="button" (click)="sortEnemyBy('enemy')">Enemy <span>{{ enemySortIndicator('enemy') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="enemySortAria('kills')"><button type="button" (click)="sortEnemyBy('kills')">Kills <span>{{ enemySortIndicator('kills') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="enemySortAria('items')"><button type="button" (click)="sortEnemyBy('items')">Items <span>{{ enemySortIndicator('items') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="enemySortAria('averageItems')"><button type="button" (click)="sortEnemyBy('averageItems')">Avg items <span>{{ enemySortIndicator('averageItems') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="enemySortAria('totalWorth')"><button type="button" (click)="sortEnemyBy('totalWorth')">Total worth <span>{{ enemySortIndicator('totalWorth') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="enemySortAria('averageTotalWorth')"><button type="button" (click)="sortEnemyBy('averageTotalWorth')">Avg total worth <span>{{ enemySortIndicator('averageTotalWorth') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="enemySortAria('itemsWorth')"><button type="button" (click)="sortEnemyBy('itemsWorth')">Items worth <span>{{ enemySortIndicator('itemsWorth') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="enemySortAria('averageItemsWorth')"><button type="button" (click)="sortEnemyBy('averageItemsWorth')">Avg items worth <span>{{ enemySortIndicator('averageItemsWorth') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="enemySortAria('money')"><button type="button" (click)="sortEnemyBy('money')">Money dropped <span>{{ enemySortIndicator('money') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="enemySortAria('averageMoney')"><button type="button" (click)="sortEnemyBy('averageMoney')">Avg money <span>{{ enemySortIndicator('averageMoney') }}</span></button></th>
+							</tr>
+						</thead>
+						<tbody>
+							@for (aggregate of sortedEnemyAggregates; track aggregate.enemy.id) {
+								<tr>
+									<th scope="row">
+										{{ aggregate.enemy.name }}<span class="table-subtitle">Level {{ aggregate.enemy.level }} · #{{ aggregate.enemy.id }}</span>
+									</th>
+									<td>{{ aggregate.kills }}</td>
+									<td>{{ aggregate.items }}</td>
+									<td>{{ averageForEnemy(aggregate.items, aggregate.kills).toFixed(1) }}</td>
+									<td>{{ formatShortMoney(aggregate.totalWorth) }}</td>
+									<td>{{ formatShortMoney(averageForEnemy(aggregate.totalWorth, aggregate.kills)) }}</td>
+									<td>{{ formatShortMoney(aggregate.itemsWorth) }}</td>
+									<td>{{ formatShortMoney(averageForEnemy(aggregate.itemsWorth, aggregate.kills)) }}</td>
+									<td>{{ formatShortMoney(aggregate.money) }}</td>
+									<td>{{ formatShortMoney(averageForEnemy(aggregate.money, aggregate.kills)) }}</td>
+								</tr>
+							} @empty {
+								<tr><td colspan="10" class="table-empty">No recorded kills.</td></tr>
+							}
+						</tbody>
+					</table>
+				</div>
+			</section>
+
+			<section class="table-section" aria-labelledby="item-breakdown-title">
+				<h3 id="item-breakdown-title">Item breakdown <small>All recorded drops</small></h3>
+				<div class="table-scroll">
+					<table>
+						<thead>
+							<tr>
+								<th scope="col" [attr.aria-sort]="itemSortAria('item')"><button type="button" (click)="sortItemBy('item')">Item <span>{{ itemSortIndicator('item') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="itemSortAria('fromEnemies')"><button type="button" (click)="sortItemBy('fromEnemies')">From enemies <span>{{ itemSortIndicator('fromEnemies') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="itemSortAria('fromChests')"><button type="button" (click)="sortItemBy('fromChests')">From chests <span>{{ itemSortIndicator('fromChests') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="itemSortAria('totalLooted')"><button type="button" (click)="sortItemBy('totalLooted')">Total looted <span>{{ itemSortIndicator('totalLooted') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="itemSortAria('killsPerDrop')"><button type="button" (click)="sortItemBy('killsPerDrop')">Kills per drop <span>{{ itemSortIndicator('killsPerDrop') }}</span></button></th>
+							</tr>
+						</thead>
+						<tbody>
+							@for (aggregate of sortedItemAggregates; track aggregate.item.id) {
+								<tr>
+									<th scope="row">{{ aggregate.item.name }}<span class="table-subtitle">#{{ aggregate.item.id }}</span></th>
+									<td>{{ aggregate.fromEnemies }}</td>
+									<td>{{ aggregate.fromChests }}</td>
+									<td>{{ aggregate.fromEnemies + aggregate.fromChests }}</td>
+									<td>
+										@if (averageKillsPerDrop(aggregate.enemyDropKills); as averageKills) {
+											{{ averageKills.toFixed(1) }}
+										} @else {
+											—
+										}
+									</td>
+								</tr>
+							} @empty {
+								<tr><td colspan="5" class="table-empty">No items have been recorded.</td></tr>
+							}
+						</tbody>
+					</table>
+				</div>
+				<div class="money-earned">
+					<h4>Money earned</h4>
+					<div><span>By kills</span><strong>{{ formatMoney(moneyFromEnemies + enemyItemWorth) }}</strong></div>
+					<div><span>By chests</span><strong>{{ formatMoney(moneyFromChests + chestItemWorth) }}</strong></div>
+					<div><span>Total</span><strong>{{ formatMoney(moneyFromEnemies + moneyFromChests + allItemWorth) }}</strong></div>
+				</div>
+			</section>
 		</aside>
 	</div>
 </section>

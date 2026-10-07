@@ -43,7 +43,7 @@ function isSavedKill(value: unknown): value is SavedKill {
 @Injectable({ providedIn: 'root' })
 export class MainService {
 	// Set true to use the bundled mock data without reading or changing browser storage.
-	readonly useMockData = true;
+	readonly useMockData = false;
 	private readonly storageKey = 'westfall-stats-data';
 	readonly killedEnemies = signal<KilledEnemy[]>([]);
 

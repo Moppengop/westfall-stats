@@ -152,60 +152,66 @@
 				<div class="worth-grid">
 					<article class="worth-highlight">
 						<h4>Most worth</h4>
-						@if (mostWorthKill; as kill) {
-							<div class="kill-entry kill-entry--most-worth">
-								<header class="kill-entry__header">
-									<span class="kill-number">#{{ kill.kill_number }}</span>
-									<h5>{{ kill.enemy.name }}</h5>
-									<span class="enemy-level">Level {{ kill.enemy.level }}</span>
-								</header>
-								<div class="kill-entry__content">
-									<div class="drops">
-										<h3>Drops</h3>
-										<ul>
-											@for (drop of kill.dropped_items; track $index) {
-												<li><span>{{ drop.item.name }}</span><strong>×{{ drop.amount }}</strong></li>
-											}
-											@if (kill.dropped_money > 0) {
-												<li><span>Money</span><strong>{{ formatMoney(kill.dropped_money) }}</strong></li>
-											}
-											<li class="drop-total">
-												<span>Total worth</span><strong>{{ formatMoney(killWorth(kill)) }}</strong>
-											</li>
-										</ul>
+						@if (mostWorthKills.length > 0) {
+							@for (kill of mostWorthKills; track kill.kill_number; let rank = $index) {
+								<div class="kill-entry kill-entry--most-worth-{{ rank + 1 }}">
+									<header class="kill-entry__header">
+										<span class="worth-rank">#{{ rank + 1 }}</span>
+										<span class="kill-number">Kill #{{ kill.kill_number }}</span>
+										<h5>{{ kill.enemy.name }}</h5>
+										<span class="enemy-level">Level {{ kill.enemy.level }}</span>
+									</header>
+									<div class="kill-entry__content">
+										<div class="drops">
+											<h3>Drops</h3>
+											<ul>
+												@for (drop of kill.dropped_items; track $index) {
+													<li><span>{{ drop.item.name }}</span><strong>×{{ drop.amount }}</strong></li>
+												}
+												@if (kill.dropped_money > 0) {
+													<li><span>Money</span><strong>{{ formatMoney(kill.dropped_money) }}</strong></li>
+												}
+												<li class="drop-total">
+													<span>Total worth</span><strong>{{ formatMoney(killWorth(kill)) }}</strong>
+												</li>
+											</ul>
+										</div>
 									</div>
 								</div>
-							</div>
+							}
 						} @else {
 							<p class="empty-state">No kills match these filters.</p>
 						}
 					</article>
 					<article class="worth-highlight">
 						<h4>Least worth</h4>
-						@if (leastWorthKill; as kill) {
-							<div class="kill-entry kill-entry--least-worth">
-								<header class="kill-entry__header">
-									<span class="kill-number">#{{ kill.kill_number }}</span>
-									<h5>{{ kill.enemy.name }}</h5>
-									<span class="enemy-level">Level {{ kill.enemy.level }}</span>
-								</header>
-								<div class="kill-entry__content">
-									<div class="drops">
-										<h3>Drops</h3>
-										<ul>
-											@for (drop of kill.dropped_items; track $index) {
-												<li><span>{{ drop.item.name }}</span><strong>×{{ drop.amount }}</strong></li>
-											}
-											@if (kill.dropped_money > 0) {
-												<li><span>Money</span><strong>{{ formatMoney(kill.dropped_money) }}</strong></li>
-											}
-											<li class="drop-total">
-												<span>Total worth</span><strong>{{ formatMoney(killWorth(kill)) }}</strong>
-											</li>
-										</ul>
+						@if (leastWorthKills.length > 0) {
+							@for (kill of leastWorthKills; track kill.kill_number; let rank = $index) {
+								<div class="kill-entry kill-entry--least-worth-{{ rank + 1 }}">
+									<header class="kill-entry__header">
+										<span class="worth-rank">#{{ rank + 1 }}</span>
+										<span class="kill-number">Kill #{{ kill.kill_number }}</span>
+										<h5>{{ kill.enemy.name }}</h5>
+										<span class="enemy-level">Level {{ kill.enemy.level }}</span>
+									</header>
+									<div class="kill-entry__content">
+										<div class="drops">
+											<h3>Drops</h3>
+											<ul>
+												@for (drop of kill.dropped_items; track $index) {
+													<li><span>{{ drop.item.name }}</span><strong>×{{ drop.amount }}</strong></li>
+												}
+												@if (kill.dropped_money > 0) {
+													<li><span>Money</span><strong>{{ formatMoney(kill.dropped_money) }}</strong></li>
+												}
+												<li class="drop-total">
+													<span>Total worth</span><strong>{{ formatMoney(killWorth(kill)) }}</strong>
+												</li>
+											</ul>
+										</div>
 									</div>
 								</div>
-							</div>
+							}
 						} @else {
 							<p class="empty-state">No kills match these filters.</p>
 						}

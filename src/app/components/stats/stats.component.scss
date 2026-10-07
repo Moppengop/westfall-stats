@@ -106,16 +106,52 @@
 	background: #f1f7f2;
 }
 
-.kill-entry--most-worth {
+.kill-entry--most-worth-1 {
 	border-color: #286b4f;
 	box-shadow: inset 4px 0 #286b4f;
-	background: #eaf5ec;
+	background: #e2f0e5;
 }
 
-.kill-entry--least-worth {
+.kill-entry--most-worth-2 {
+	border-color: #6a9b7a;
+	box-shadow: inset 4px 0 #6a9b7a;
+	background: #edf5ef;
+}
+
+.kill-entry--most-worth-3 {
+	border-color: #a9c5af;
+	box-shadow: inset 4px 0 #a9c5af;
+	background: #f5f8f5;
+}
+
+.kill-entry--least-worth-1 {
 	border-color: #b94b45;
 	box-shadow: inset 4px 0 #b94b45;
-	background: #fbefee;
+	background: #f7e4e2;
+}
+
+.kill-entry--least-worth-2 {
+	border-color: #cf827d;
+	box-shadow: inset 4px 0 #cf827d;
+	background: #faeeed;
+}
+
+.kill-entry--least-worth-3 {
+	border-color: #dfb1ae;
+	box-shadow: inset 4px 0 #dfb1ae;
+	background: #fcf5f4;
+}
+
+.kill-entry--least-worth-1 .drops li.drop-total strong,
+.kill-entry--least-worth-2 .drops li.drop-total strong,
+.kill-entry--least-worth-3 .drops li.drop-total strong {
+	color: #b94b45;
+}
+
+.worth-rank {
+	color: #26332b;
+	font-size: 12px;
+	font-weight: 700;
 }
 
 .kill-entry__header {
@@ -342,8 +378,14 @@
 }
 
 .worth-highlight {
+	display: grid;
+	gap: 10px;
 	margin: 0;
 	padding: 10px;
+}
+
+.worth-highlight h4 {
+	margin: 0;
 }
 
 .worth-highlight .kill-entry {

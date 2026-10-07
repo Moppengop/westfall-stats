@@ -138,12 +138,16 @@ export class StatsComponent {
     return this.average(this.filteredTotalWorth);
   }
 
-  get mostWorthKill(): KilledEnemy | null {
-    return this.worthKill((current, candidate) => this.killWorth(candidate) > this.killWorth(current));
+  get mostWorthKills(): KilledEnemy[] {
+    return [...this.filteredKills]
+      .sort((first, second) => this.killWorth(second) - this.killWorth(first))
+      .slice(0, 3);
   }
 
-  get leastWorthKill(): KilledEnemy | null {
-    return this.worthKill((current, candidate) => this.killWorth(candidate) < this.killWorth(current));
+  get leastWorthKills(): KilledEnemy[] {
+    return [...this.filteredKills]
+      .sort((first, second) => this.killWorth(first) - this.killWorth(second))
+      .slice(0, 3);
   }
 
   get enemyAggregates(): EnemyAggregate[] {
@@ -427,17 +431,6 @@ export class StatsComponent {
     this.selectedEnemyNames = null;
     this.minimumLevel = null;
     this.maximumLevel = null;
-  }
-
-  private worthKill(
-    isBetter: (current: KilledEnemy, candidate: KilledEnemy) => boolean,
-  ): KilledEnemy | null {
-    const kills = this.filteredKills;
-    if (kills.length === 0) {
-      return null;
-    }
-
-    return kills.reduce((best, candidate) => isBetter(best, candidate) ? candidate : best);
   }
 
   private enemySortValue(aggregate: EnemyAggregate, key: EnemySortKey): number | string {

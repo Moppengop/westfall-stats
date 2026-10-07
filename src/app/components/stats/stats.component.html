@@ -240,12 +240,48 @@
 									<td>{{ aggregate.kills }}</td>
 									<td>{{ aggregate.items }}</td>
 									<td>{{ averageForEnemy(aggregate.items, aggregate.kills).toFixed(1) }}</td>
-									<td>{{ formatShortMoney(aggregate.totalWorth) }}</td>
-									<td>{{ formatShortMoney(averageForEnemy(aggregate.totalWorth, aggregate.kills)) }}</td>
-									<td>{{ formatShortMoney(aggregate.itemsWorth) }}</td>
-									<td>{{ formatShortMoney(averageForEnemy(aggregate.itemsWorth, aggregate.kills)) }}</td>
-									<td>{{ formatShortMoney(aggregate.money) }}</td>
-									<td>{{ formatShortMoney(averageForEnemy(aggregate.money, aggregate.kills)) }}</td>
+									<td>
+										<span class="coin-value" [attr.aria-label]="moneyPartsLabel(aggregate.totalWorth)">
+											@for (part of moneyParts(aggregate.totalWorth); track part.denomination) {
+												<span [class]="'coin-value__' + part.denomination" [attr.title]="part.denomination">{{ part.displayAmount }}</span>
+											}
+										</span>
+									</td>
+									<td>
+										<span class="coin-value" [attr.aria-label]="moneyPartsLabel(averageForEnemy(aggregate.totalWorth, aggregate.kills))">
+											@for (part of moneyParts(averageForEnemy(aggregate.totalWorth, aggregate.kills)); track part.denomination) {
+												<span [class]="'coin-value__' + part.denomination" [attr.title]="part.denomination">{{ part.displayAmount }}</span>
+											}
+										</span>
+									</td>
+									<td>
+										<span class="coin-value" [attr.aria-label]="moneyPartsLabel(aggregate.itemsWorth)">
+											@for (part of moneyParts(aggregate.itemsWorth); track part.denomination) {
+												<span [class]="'coin-value__' + part.denomination" [attr.title]="part.denomination">{{ part.displayAmount }}</span>
+											}
+										</span>
+									</td>
+									<td>
+										<span class="coin-value" [attr.aria-label]="moneyPartsLabel(averageForEnemy(aggregate.itemsWorth, aggregate.kills))">
+											@for (part of moneyParts(averageForEnemy(aggregate.itemsWorth, aggregate.kills)); track part.denomination) {
+												<span [class]="'coin-value__' + part.denomination" [attr.title]="part.denomination">{{ part.displayAmount }}</span>
+											}
+										</span>
+									</td>
+									<td>
+										<span class="coin-value" [attr.aria-label]="moneyPartsLabel(aggregate.money)">
+											@for (part of moneyParts(aggregate.money); track part.denomination) {
+												<span [class]="'coin-value__' + part.denomination" [attr.title]="part.denomination">{{ part.displayAmount }}</span>
+											}
+										</span>
+									</td>
+									<td>
+										<span class="coin-value" [attr.aria-label]="moneyPartsLabel(averageForEnemy(aggregate.money, aggregate.kills))">
+											@for (part of moneyParts(averageForEnemy(aggregate.money, aggregate.kills)); track part.denomination) {
+												<span [class]="'coin-value__' + part.denomination" [attr.title]="part.denomination">{{ part.displayAmount }}</span>
+											}
+										</span>
+									</td>
 								</tr>
 							} @empty {
 								<tr><td colspan="10" class="table-empty">No recorded kills.</td></tr>
@@ -266,6 +302,8 @@
 								<th scope="col" [attr.aria-sort]="itemSortAria('fromChests')"><button type="button" (click)="sortItemBy('fromChests')">From chests <span>{{ itemSortIndicator('fromChests') }}</span></button></th>
 								<th scope="col" [attr.aria-sort]="itemSortAria('totalLooted')"><button type="button" (click)="sortItemBy('totalLooted')">Total looted <span>{{ itemSortIndicator('totalLooted') }}</span></button></th>
 								<th scope="col" [attr.aria-sort]="itemSortAria('killsPerDrop')"><button type="button" (click)="sortItemBy('killsPerDrop')">Kills per drop <span>{{ itemSortIndicator('killsPerDrop') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="itemSortAria('unitWorth')"><button type="button" (click)="sortItemBy('unitWorth')">Worth each <span>{{ itemSortIndicator('unitWorth') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="itemSortAria('totalWorth')"><button type="button" (click)="sortItemBy('totalWorth')">Total worth <span>{{ itemSortIndicator('totalWorth') }}</span></button></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -282,9 +320,23 @@
 											—
 										}
 									</td>
+									<td>
+										<span class="coin-value" [attr.aria-label]="moneyPartsLabel(aggregate.item.sell_price)">
+											@for (part of moneyParts(aggregate.item.sell_price); track part.denomination) {
+												<span [class]="'coin-value__' + part.denomination" [attr.title]="part.denomination">{{ part.displayAmount }}</span>
+											}
+										</span>
+									</td>
+									<td>
+										<span class="coin-value" [attr.aria-label]="moneyPartsLabel(itemTotalWorth(aggregate))">
+											@for (part of moneyParts(itemTotalWorth(aggregate)); track part.denomination) {
+												<span [class]="'coin-value__' + part.denomination" [attr.title]="part.denomination">{{ part.displayAmount }}</span>
+											}
+										</span>
+									</td>
 								</tr>
 							} @empty {
-								<tr><td colspan="5" class="table-empty">No items have been recorded.</td></tr>
+								<tr><td colspan="7" class="table-empty">No items have been recorded.</td></tr>
 							}
 						</tbody>
 					</table>

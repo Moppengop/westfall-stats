@@ -21,6 +21,12 @@ interface ItemAggregate {
   enemyDropKills: number;
 }
 
+interface MoneyPart {
+  denomination: 'gold' | 'silver' | 'copper';
+  amount: number;
+  displayAmount: string;
+}
+
 type EnemySortKey =
   | 'enemy'
   | 'kills'
@@ -33,7 +39,14 @@ type EnemySortKey =
   | 'money'
   | 'averageMoney';
 
-type ItemSortKey = 'item' | 'fromEnemies' | 'fromChests' | 'totalLooted' | 'killsPerDrop';
+type ItemSortKey =
+  | 'item'
+  | 'fromEnemies'
+  | 'fromChests'
+  | 'totalLooted'
+  | 'killsPerDrop'
+  | 'unitWorth'
+  | 'totalWorth';
 
 @Component({
   selector: 'app-stats',
@@ -221,6 +234,10 @@ export class StatsComponent {
     );
   }
 
+  itemTotalWorth(aggregate: ItemAggregate): number {
+    return aggregate.item.sell_price * (aggregate.fromEnemies + aggregate.fromChests);
+  }
+
   get moneyFromEnemies(): number {
     return this.allKills.reduce(
       (total, kill) => total + (this.isChest(kill.enemy) ? 0 : kill.dropped_money),
@@ -292,24 +309,40 @@ export class StatsComponent {
     return parts.join(' ');
   }
 
-  formatShortMoney(copper: number): string {
-    const rounded = Math.round(copper);
-    const gold = Math.floor(rounded / 10000);
-    const silver = Math.floor((rounded % 10000) / 100);
-    const copperRemainder = rounded % 100;
-    const parts: string[] = [];
+  moneyParts(copper: number): MoneyPart[] {
+    const amount = Math.round(copper);
+    const parts: MoneyPart[] = [];
+    const gold = Math.floor(amount / 10000);
+    const silver = Math.floor((amount % 10000) / 100);
+    const copperRemainder = amount % 100;
 
     if (gold > 0) {
-      parts.push(`${gold}g`);
+      parts.push({ denomination: 'gold', amount: gold, displayAmount: `${gold}` });
     }
-    if (silver > 0) {
-      parts.push(`${silver}s`);
+    if (gold > 0 || silver > 0) {
+      parts.push({
+        denomination: 'silver',
+        amount: silver,
+        displayAmount: gold > 0 ? `${silver}`.padStart(2, '0') : `${silver}`,
+      });
     }
-    if (copperRemainder > 0 || parts.length === 0) {
-      parts.push(`${copperRemainder}c`);
+    if (gold > 0 || silver > 0 || copperRemainder > 0 || parts.length === 0) {
+      parts.push({
+        denomination: 'copper',
+        amount: copperRemainder,
+        displayAmount: gold > 0 || silver > 0
+          ? `${copperRemainder}`.padStart(2, '0')
+          : `${copperRemainder}`,
+      });
     }
 
-    return parts.join(' ');
+    return parts;
+  }
+
+  moneyPartsLabel(copper: number): string {
+    return this.moneyParts(copper)
+      .map((part) => `${part.amount} ${part.denomination}`)
+      .join(', ');
   }
 
   average(value: number): number {
@@ -444,6 +477,10 @@ export class StatsComponent {
         return aggregate.fromEnemies + aggregate.fromChests;
       case 'killsPerDrop':
         return this.averageKillsPerDrop(aggregate.enemyDropKills);
+      case 'unitWorth':
+        return aggregate.item.sell_price;
+      case 'totalWorth':
+        return this.itemTotalWorth(aggregate);
     }
   }
 

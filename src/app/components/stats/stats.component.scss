@@ -466,6 +466,27 @@ tbody th {
 	font-weight: 400;
 }
 
+.coin-value {
+	display: inline-flex;
+	gap: 8px;
+	font-variant-numeric: tabular-nums;
+}
+
+.coin-value__gold {
+	color: #a97900;
+	font-weight: 800
+}
+
+.coin-value__silver {
+	color: #707984;
+	font-weight: 800
+}
+
+.coin-value__copper {
+	color: #a45b32;
+	font-weight: 800
+}
+
 .table-empty {
 	padding: 16px;
 	color: #718076;

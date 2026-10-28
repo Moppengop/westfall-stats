@@ -17,7 +17,7 @@
           Enemy
           <select name="enemy" [(ngModel)]="selectedEnemy" required>
             <option [ngValue]="null">Select an enemy</option>
-            @for (enemy of enemies; track enemy.id) {
+            @for (enemy of sortedEnemies; track enemy.id) {
               <option [ngValue]="enemy">{{ enemy.name }} (level {{ enemy.level }})</option>
             }
           </select>
@@ -38,6 +38,9 @@
         <div class="item-row">
           <select [name]="'item-' + $index" [(ngModel)]="row.item">
             <option [ngValue]="null">Select an item</option>
+            @for (item of frequentItems; track item.id) {
+              <option [ngValue]="item" class="recently-dropped">{{ item.name }}</option>
+            }
             @for (item of sortedItems; track item.id) {
               <option [ngValue]="item">{{ item.name }}</option>
             }

@@ -81,6 +81,10 @@ input {
   font: inherit;
 }
 
+option.recently-dropped {
+  background-color: #e2f1e5;
+}
+
 .drops-header {
   justify-content: space-between;
   gap: 1rem;

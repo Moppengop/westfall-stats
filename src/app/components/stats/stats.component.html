@@ -62,6 +62,15 @@
 					/>
 					No chests
 				</label>
+				<label class="check-option">
+					<input
+						type="checkbox"
+						name="excludeQuests"
+						[ngModel]="!includeQuests"
+						(ngModelChange)="includeQuests = !$event"
+					/>
+					No quests
+				</label>
 
 				<fieldset class="name-filter">
 					<legend>Enemy names</legend>
@@ -220,7 +229,7 @@
 			</section>
 
 			<section class="table-section" aria-labelledby="enemy-breakdown-title">
-				<h3 id="enemy-breakdown-title">Enemy breakdown <small>All kills, including chests</small></h3>
+				<h3 id="enemy-breakdown-title">Enemy breakdown <small>All kills, including chests and quests</small></h3>
 				<div class="table-scroll">
 					<table>
 						<thead>
@@ -306,6 +315,7 @@
 								<th scope="col" [attr.aria-sort]="itemSortAria('item')"><button type="button" (click)="sortItemBy('item')">Item <span>{{ itemSortIndicator('item') }}</span></button></th>
 								<th scope="col" [attr.aria-sort]="itemSortAria('fromEnemies')"><button type="button" (click)="sortItemBy('fromEnemies')">From enemies <span>{{ itemSortIndicator('fromEnemies') }}</span></button></th>
 								<th scope="col" [attr.aria-sort]="itemSortAria('fromChests')"><button type="button" (click)="sortItemBy('fromChests')">From chests <span>{{ itemSortIndicator('fromChests') }}</span></button></th>
+								<th scope="col" [attr.aria-sort]="itemSortAria('fromQuests')"><button type="button" (click)="sortItemBy('fromQuests')">From quests <span>{{ itemSortIndicator('fromQuests') }}</span></button></th>
 								<th scope="col" [attr.aria-sort]="itemSortAria('totalLooted')"><button type="button" (click)="sortItemBy('totalLooted')">Total looted <span>{{ itemSortIndicator('totalLooted') }}</span></button></th>
 								<th scope="col" [attr.aria-sort]="itemSortAria('killsPerDrop')"><button type="button" (click)="sortItemBy('killsPerDrop')">Kills per drop <span>{{ itemSortIndicator('killsPerDrop') }}</span></button></th>
 								<th scope="col" [attr.aria-sort]="itemSortAria('unitWorth')"><button type="button" (click)="sortItemBy('unitWorth')">Worth each <span>{{ itemSortIndicator('unitWorth') }}</span></button></th>
@@ -318,7 +328,8 @@
 									<th scope="row">{{ aggregate.item.name }}<span class="table-subtitle">#{{ aggregate.item.id }}</span></th>
 									<td>{{ aggregate.fromEnemies }}</td>
 									<td>{{ aggregate.fromChests }}</td>
-									<td>{{ aggregate.fromEnemies + aggregate.fromChests }}</td>
+									<td>{{ aggregate.fromQuests }}</td>
+									<td>{{ aggregate.fromEnemies + aggregate.fromChests + aggregate.fromQuests }}</td>
 									<td>
 										@if (averageKillsPerDrop(aggregate.enemyDropKills); as averageKills) {
 											{{ averageKills.toFixed(1) }}
@@ -342,7 +353,7 @@
 									</td>
 								</tr>
 							} @empty {
-								<tr><td colspan="7" class="table-empty">No items have been recorded.</td></tr>
+								<tr><td colspan="8" class="table-empty">No items have been recorded.</td></tr>
 							}
 						</tbody>
 					</table>
@@ -351,7 +362,8 @@
 					<h4>Money earned</h4>
 					<div><span>By kills</span><strong>{{ formatMoney(moneyFromEnemies + enemyItemWorth) }}</strong></div>
 					<div><span>By chests</span><strong>{{ formatMoney(moneyFromChests + chestItemWorth) }}</strong></div>
-					<div><span>Total</span><strong>{{ formatMoney(moneyFromEnemies + moneyFromChests + allItemWorth) }}</strong></div>
+					<div><span>By quests</span><strong>{{ formatMoney(moneyFromQuests + questItemWorth) }}</strong></div>
+					<div><span>Total</span><strong>{{ formatMoney(moneyFromEnemies + moneyFromChests + moneyFromQuests + allItemWorth) }}</strong></div>
 				</div>
 			</section>
 		</aside>

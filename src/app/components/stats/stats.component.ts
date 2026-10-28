@@ -18,6 +18,7 @@ interface ItemAggregate {
   item: Item;
   fromEnemies: number;
   fromChests: number;
+  fromQuests: number;
   enemyDropKills: number;
 }
 
@@ -43,6 +44,7 @@ type ItemSortKey =
   | 'item'
   | 'fromEnemies'
   | 'fromChests'
+  | 'fromQuests'
   | 'totalLooted'
   | 'killsPerDrop'
   | 'unitWorth'
@@ -58,6 +60,7 @@ export class StatsComponent {
   @Input() knownEnemies: Enemy[] = [];
 
   includeChests = true;
+  includeQuests = false;
   selectedEnemyNames: string[] | null = null;
   minimumLevel: number | null = null;
   maximumLevel: number | null = null;
@@ -88,6 +91,7 @@ export class StatsComponent {
 
     return this.allKills.filter((kill) =>
       (this.includeChests || !this.isChest(kill.enemy))
+      && (this.includeQuests || !this.isQuest(kill.enemy))
       && (this.selectedEnemyNames === null || this.selectedEnemyNames.includes(kill.enemy.name))
       && (this.minimumLevel === null || kill.enemy.level >= this.minimumLevel)
       && (this.maximumLevel === null || kill.enemy.level <= this.maximumLevel),
@@ -192,16 +196,25 @@ export class StatsComponent {
     const aggregates = new Map<number, ItemAggregate>();
     for (const kill of this.allKills) {
       const isChest = this.isChest(kill.enemy);
+      const isQuest = this.isQuest(kill.enemy);
       const droppedItemIds = new Set<number>();
       for (const drop of kill.dropped_items) {
         let aggregate = aggregates.get(drop.item.id);
         if (!aggregate) {
-          aggregate = { item: drop.item, fromEnemies: 0, fromChests: 0, enemyDropKills: 0 };
+          aggregate = {
+            item: drop.item,
+            fromEnemies: 0,
+            fromChests: 0,
+            fromQuests: 0,
+            enemyDropKills: 0,
+          };
           aggregates.set(drop.item.id, aggregate);
         }
 
         if (isChest) {
           aggregate.fromChests += drop.amount;
+        } else if (isQuest) {
+          aggregate.fromQuests += drop.amount;
         } else {
           aggregate.fromEnemies += drop.amount;
           if (drop.amount > 0) {
@@ -239,12 +252,14 @@ export class StatsComponent {
   }
 
   itemTotalWorth(aggregate: ItemAggregate): number {
-    return aggregate.item.sell_price * (aggregate.fromEnemies + aggregate.fromChests);
+    return aggregate.item.sell_price
+      * (aggregate.fromEnemies + aggregate.fromChests + aggregate.fromQuests);
   }
 
   get moneyFromEnemies(): number {
     return this.allKills.reduce(
-      (total, kill) => total + (this.isChest(kill.enemy) ? 0 : kill.dropped_money),
+      (total, kill) =>
+        total + (this.isChest(kill.enemy) || this.isQuest(kill.enemy) ? 0 : kill.dropped_money),
       0,
     );
   }
@@ -256,8 +271,17 @@ export class StatsComponent {
     );
   }
 
-  get nonChestKillCount(): number {
-    return this.allKills.filter((kill) => !this.isChest(kill.enemy)).length;
+  get moneyFromQuests(): number {
+    return this.allKills.reduce(
+      (total, kill) => total + (this.isQuest(kill.enemy) ? kill.dropped_money : 0),
+      0,
+    );
+  }
+
+  get enemyKillCount(): number {
+    return this.allKills.filter(
+      (kill) => !this.isChest(kill.enemy) && !this.isQuest(kill.enemy),
+    ).length;
   }
 
   get allItemWorth(): number {
@@ -266,7 +290,8 @@ export class StatsComponent {
 
   get enemyItemWorth(): number {
     return this.allKills.reduce(
-      (total, kill) => total + (this.isChest(kill.enemy) ? 0 : this.itemWorth(kill)),
+      (total, kill) =>
+        total + (this.isChest(kill.enemy) || this.isQuest(kill.enemy) ? 0 : this.itemWorth(kill)),
       0,
     );
   }
@@ -274,6 +299,13 @@ export class StatsComponent {
   get chestItemWorth(): number {
     return this.allKills.reduce(
       (total, kill) => total + (this.isChest(kill.enemy) ? this.itemWorth(kill) : 0),
+      0,
+    );
+  }
+
+  get questItemWorth(): number {
+    return this.allKills.reduce(
+      (total, kill) => total + (this.isQuest(kill.enemy) ? this.itemWorth(kill) : 0),
       0,
     );
   }
@@ -358,7 +390,7 @@ export class StatsComponent {
   }
 
   averageKillsPerDrop(kills: number): number | null {
-    return kills === 0 ? null : this.nonChestKillCount / kills;
+    return kills === 0 ? null : this.enemyKillCount / kills;
   }
 
   sortEnemyBy(key: EnemySortKey): void {
@@ -405,6 +437,10 @@ export class StatsComponent {
     return enemy.name.trim().toLocaleLowerCase() === 'chest';
   }
 
+  isQuest(enemy: Enemy): boolean {
+    return enemy.name.trim().toLocaleLowerCase() === 'quest';
+  }
+
   isEnemyNameSelected(name: string): boolean {
     return this.selectedEnemyNames === null || this.selectedEnemyNames.includes(name);
   }
@@ -428,6 +464,7 @@ export class StatsComponent {
 
   resetFilters(): void {
     this.includeChests = true;
+    this.includeQuests = false;
     this.selectedEnemyNames = null;
     this.minimumLevel = null;
     this.maximumLevel = null;
@@ -466,8 +503,10 @@ export class StatsComponent {
         return aggregate.fromEnemies;
       case 'fromChests':
         return aggregate.fromChests;
+      case 'fromQuests':
+        return aggregate.fromQuests;
       case 'totalLooted':
-        return aggregate.fromEnemies + aggregate.fromChests;
+        return aggregate.fromEnemies + aggregate.fromChests + aggregate.fromQuests;
       case 'killsPerDrop':
         return this.averageKillsPerDrop(aggregate.enemyDropKills);
       case 'unitWorth':

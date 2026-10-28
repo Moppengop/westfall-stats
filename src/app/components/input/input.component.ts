@@ -31,12 +31,22 @@ export class InputComponent implements OnInit {
   isCreateItemOpen = false;
   isCreateKillOpen = false;
   isCreateChestOpen = false;
+  isCreateQuestOpen = false;
   backupMessage = '';
 
   get chestEnemy(): Enemy {
     return this.knownEnemies.find((enemy) => enemy.name === 'Chest' && enemy.level === 1) ?? {
       id: Math.max(0, ...this.knownEnemies.map((enemy) => enemy.id)) + 1,
       name: 'Chest',
+      level: 1,
+      health: 1,
+    };
+  }
+
+  get questEnemy(): Enemy {
+    return this.knownEnemies.find((enemy) => enemy.name === 'Quest' && enemy.level === 1) ?? {
+      id: Math.max(0, ...this.knownEnemies.map((enemy) => enemy.id)) + 1,
+      name: 'Quest',
       level: 1,
       health: 1,
     };
@@ -116,6 +126,7 @@ export class InputComponent implements OnInit {
     this.addKill(kill.enemy, kill.dropped_items, kill.dropped_money);
     this.isCreateKillOpen = false;
     this.isCreateChestOpen = false;
+    this.isCreateQuestOpen = false;
   }
 
   findPossibleItemsByName(name: string): Item[] {
